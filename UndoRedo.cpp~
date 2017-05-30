@@ -1,0 +1,44 @@
+#include <cstdio>
+
+using namespace std;
+
+#define MAX 200;
+
+map <string, int> banco;
+
+void carregarBanco();
+void printarBanco();
+
+int main(void){
+  carregarBanco();
+  printarBanco();
+  return 0;
+}
+
+void carregarBanco(){
+  FILE *f;
+  char c;
+  int valori;
+  char atributo[MAX];
+  char valor[MAX];
+  f = fopen("entrada.txt", "r");
+  while(c = fgetc(f) && c != EOF){
+    for(i = 0; c != '=', i++){
+      atributo[i] = c;
+      c = fgetc(f);
+    }
+    for(i = 0; c != '\n', i++){
+      valor[i] = c;
+      c = fgetc(f);
+    }
+    banco[atributo] = stoi(valor, &valori, 10);
+  }
+}
+
+void printarBanco(){
+
+  for(map<string, int>::iterator i = banco.begin; i != banco.end; i++){
+    printf("%s = %d\n", banco.first.c_str(), banco.second);
+  }
+  printf("\n");
+}

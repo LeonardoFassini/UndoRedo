@@ -125,17 +125,20 @@ void analisarLog(){
   f = fopen("log.txt", "r");
   fseek(f, 0, SEEK_END);
   size = ftell(f);                                              // salva o valor do tamanho do arquivo
+  printf("%llu", size);
   for(i = 2; i <= size && (!terminator); i++){                      // Vai iterando até chegar no começo do arquivo
     fseek(f, size-i, SEEK_SET);
-    if((c = fgetc(f)) == '\n'){                                 // Se é /n, é pq iniciou uma nova operação
-      fgets(s, MAX, f);                                         // Pega essa operação.
-      strcpy(junk, s);                                          // Copia para uma variavel que possa ser zoada
-      junk[strlen(junk)-1] = '\0';                              // Coloca o /0 nela
+    if((c = fgetc(f)) == '\n' || i == size){                        // Se é /n, é pq iniciou uma nova operação
+      if(i == size) fseek(f, 0, SEEK_SET);                          // gambiarra pra pregar primeira linha
+      fgets(s, MAX, f);                                             // Pega essa operação.
+      printf("%s", s);
+      strcpy(junk, s);                                           // Copia para uma variavel que possa ser zoada
+      junk[strlen(junk)-1] = '\0';                               // Coloca o /0 nela
 //                  END CHECKPOINT CASE
-      if(!strcmp(s, "<END CKPT>")) ckptFound = true;            // Se a operação for END_CKPT...
+      if(!strcmp(s, "<END CKPT>")) ckptFound = true;             // Se a operação for END_CKPT...
 //                  START CHECKPOINT CASE
-      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT")){     // Se a operação for start checkpoint...
-        for(j = 12, k = 0; s[j] != ')';){                         // Ler os nomes das transações
+      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT")){    // Se a operação for start checkpoint...
+        for(j = 12, k = 0; s[j] != ')';){                        // Ler os nomes das transações
           while(s[j] != ',' && s[j] != ')'){
             tmpname[k++] = s[j++];
           }

@@ -125,7 +125,6 @@ void analisarLog(){
   f = fopen("log.txt", "r");
   fseek(f, 0, SEEK_END);
   size = ftell(f);                                              // salva o valor do tamanho do arquivo
-  printf("%llu", size);
   for(i = 2; i <= size && (!terminator); i++){                      // Vai iterando até chegar no começo do arquivo
     fseek(f, size-i, SEEK_SET);
     if((c = fgetc(f)) == '\n' || i == size){                        // Se é /n, é pq iniciou uma nova operação

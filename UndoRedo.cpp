@@ -14,23 +14,43 @@ typedef unsigned long long ull;
 
 #define MAX 200
 
+/*
 typedef struct a{
   string nome;
   string atributo;
   string velho;
   string novo;
 } transaction_t;
+*/
+
+class transaction {
+  public:
+    string nome;
+    string atributo;
+    string velho;
+    string novo;
+
+    transaction(string no, string atr, string vel, string nov){
+      nome = no;
+      atributo = atr;
+      velho = vel;
+      novo = nov;
+    }
+};
+
 
 map <string, string> banco;
 map <string, bool> committed;
-stack <transaction_t> redo;
-queue <transaction_t> undo;
+stack <transaction> redo;
+queue <transaction> undo;
 
 void carregarBanco();
 void printarBanco();
 void analisarLog();
 
 int main(void){
+  transaction t(string("T1"), string("A"), string("1"), string("2"));
+  printf("%s %s %s %s\n", t.nome.c_str(), t.atributo.c_str(), t.velho.c_str(), t.novo.c_str());
   carregarBanco();
   //printarBanco();
   analisarLog();
@@ -99,12 +119,11 @@ void analisarLog(){
         }
         tmpname[k] = '\0';
         committed[tmpname] = true;
-        printf("%s\n", tmpname);
       }
       else if(junk[6] = '\0', !strcmp(junk, "<start")){            // Se for start transação....
       }
       else{                                                     // Se for uma operação de modificação no banco...
-        
+
       }
     }
   }

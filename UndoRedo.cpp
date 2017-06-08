@@ -57,6 +57,7 @@ map <string, string> banco;
 stack <operation> redo;
 queue <operation> undo;
 
+void printarOperacoes();
 void printarTransacoes();
 void carregarBanco();
 void printarBanco();
@@ -70,6 +71,7 @@ int main(void){
   printarBanco();
   analisarLog();
   printarTransacoes();
+  printarOperacoes();
   return 0;
 }
 
@@ -209,5 +211,21 @@ void printarTransacoes(){
   printf("##TRANSAÇÕES##\n");
   for(j = transacoes.begin(); j != transacoes.end(); j++){
       printf("Nome: %s\nCommited: %s\nStarted: %s\n", j->nome.c_str(), j->committed ? "true" : "false", j->started ? "true" : "false");
+  }
+}
+
+void printarOperacoes(){
+  operation j("", "", "", "");
+  printf("##OPERAÇÕES##\n");
+  printf("##Redo##\n");
+  while(!redo.empty()){
+    j = redo.top();
+    printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+  }
+  printf("##Undo##\n");
+  while(!undo.empty()){
+    j = undo.front();
+    undo.pop();
+    printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
   }
 }

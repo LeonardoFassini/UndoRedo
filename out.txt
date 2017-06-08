@@ -21,3 +21,8 @@ Started: true
 Nome: T2
 Commited: false
 Started: false
+##OPERAÇÕES##
+##Redo##
+##Undo##
+<T3,D,19,20>
+<T2,C,14,15>

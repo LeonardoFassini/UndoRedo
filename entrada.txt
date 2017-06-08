@@ -1,5 +1,10 @@
-A=5
-B=9
-C=14
-D=19
-
+Idade=21
+Peso=76.2
+Altura=1.87
+Cor=23
+Tamanho=70
+Dado=4
+Dado2=34
+DadoT4=20.9
+Dado3=20
+DadoT4.2=30

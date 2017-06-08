@@ -57,21 +57,27 @@ map <string, string> banco;
 stack <operation> redo;
 queue <operation> undo;
 
-void printarOperacoes();
-void printarTransacoes();
+//void printarOperacoes();
+//void printarTransacoes();
 void carregarBanco();
 void printarBanco();
 void analisarLog();
 vector <transaction>::iterator find(string comparator);
-
+void redu();
+void undu();
 int main(void){
   // transaction t(string("T1"), string("A"), string("1"), string("2"));
   // printf("%s %s %s %s\n", t.nome.c_str(), t.atributo.c_str(), t.velho.c_str(), t.novo.c_str());
   carregarBanco();
+  printf("Dados do banco antes da recuperação:\n");
   printarBanco();
   analisarLog();
-  printarTransacoes();
-  printarOperacoes();
+  undu();
+  redu();
+  printf("Dados do banco depois da recuperação:\n");
+  printarBanco();
+  //printarTransacoes();
+  //printarOperacoes();
   return 0;
 }
 
@@ -217,19 +223,39 @@ void printarTransacoes(){
   }
 }
 
-void printarOperacoes(){
-  operation j("", "", "", "");
-  printf("##OPERAÇÕES##\n");
-  printf("##Redo##\n");
+// void printarOperacoes(){
+//   operation j("", "", "", "");
+//   printf("##OPERAÇÕES##\n");
+//   printf("##Redo##\n");
+//   while(!redo.empty()){
+//     j = redo.top();
+//     redo.pop();
+//     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+//   }
+//   printf("##Undo##\n");
+//   while(!undo.empty()){
+//     j = undo.front();
+//     undo.pop();
+//     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+//   }
+// }
+
+void undu(){
+ operation op("", "", "", "");
+ while(!undo.empty()){
+   op = undo.front();
+   undo.pop();
+   banco[op.atributo] = op.velho;
+   printf("Operação sendo desfeita: <%s,%s,%s,%s>\n", op.nome.c_str(), op.atributo.c_str(), op.velho.c_str(), op.novo.c_str());
+ }
+}
+
+void redu(){
+  operation op("", "", "", "");
   while(!redo.empty()){
-    j = redo.top();
+    op = redo.top();
     redo.pop();
-    printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
-  }
-  printf("##Undo##\n");
-  while(!undo.empty()){
-    j = undo.front();
-    undo.pop();
-    printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+    banco[op.atributo] = op.novo;
+    printf("Operação sendo refeita: <%s,%s,%s,%s>\n", op.nome.c_str(), op.atributo.c_str(), op.velho.c_str(), op.novo.c_str());
   }
 }

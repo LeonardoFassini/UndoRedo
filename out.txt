@@ -1,26 +1,37 @@
+Dados do banco antes da recuperação:
 ##BANCO##
-A = 5
-B = 9
-C = 14
-D = 19
+Altura = 1.87
+Cor = 23
+Dado = 4
+Dado2 = 34
+Dado3 = 20
+DadoT4 = 20.9
+DadoT4.2 = 30
+Idade = 21
+Peso = 76.2
+Tamanho = 70
 commit
 end ckpt
-start transaction
 start ckpt
 ##FLAGS##
 ckptFound: true
-terminator: true
+terminator: false
 passouSc: true
-0
-##TRANSAÇÕES##
-Nome: T2
-Commited: true
-Started: false
-Nome: T3
-Commited: false
-Started: true
-##OPERAÇÕES##
-##Redo##
-<T2,C,14,15>
-##Undo##
-<T3,D,19,20>
+1
+start transaction
+Operação sendo desfeita: <T4,DadoT4.2,30,78>
+Operação sendo desfeita: <T4,DadoT4,20.9,40>
+Operação sendo refeita: <T3,Dado2,20,34>
+Operação sendo refeita: <T3,Dado3,20,31>
+Dados do banco depois da recuperação:
+##BANCO##
+Altura = 1.87
+Cor = 23
+Dado = 4
+Dado2 = 34
+Dado3 = 31
+DadoT4 = 20.9
+DadoT4.2 = 30
+Idade = 21
+Peso = 76.2
+Tamanho = 70

@@ -1,0 +1,23 @@
+##BANCO##
+A = 5
+
+B = 9
+
+C = 14
+
+D = 19
+
+
+end ckpt
+start ckpt
+##FLAGS##
+ckptFound: true
+terminator: true
+passouSc: true
+##TRANSAÇÕES##
+Nome: T3
+Commited: false
+Started: true
+Nome: T2
+Commited: false
+Started: false

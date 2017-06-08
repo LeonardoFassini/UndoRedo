@@ -97,7 +97,7 @@ void carregarBanco(){
       c = fgetc(f);                                               // ou acabar o arquivo
       valor[i] = c;
     }
-    valor[i] = '\0';
+    valor[i-1] = '\0';
     if(c != EOF) banco[atributo] = valor;                         // Se não for EOF, joga no map.
   }
   fclose(f);                                                      // Fecha o arquivo
@@ -110,7 +110,6 @@ void printarBanco(){                                              // itera no ma
   for(map<string, string>::iterator i = banco.begin(); i != banco.end(); i++){
     printf("%s = %s\n", i->first.c_str(), i->second.c_str());
   }
-  printf("\n");
 }
 
 void analisarLog(){
@@ -150,7 +149,7 @@ void analisarLog(){
           k = 0;
           finder = tmpname;
           aux = find(tmpname);
-          if(aux == transacoes.end() || aux->committed == false ) countUndo++;  // Se a transação nao existir ou nao for
+          if(aux == transacoes.end()) countUndo++;  // Se a transação nao existir ou nao for
                                                                   // Comitada, aumentar o count de undo.
         }
         if(ckptFound) passouSc = true;
@@ -159,21 +158,24 @@ void analisarLog(){
         printf("ckptFound: %s\n", ckptFound ? "true" : "false");
         printf("terminator: %s\n", terminator ? "true" : "false");
         printf("passouSc: %s\n", passouSc ? "true" : "false");
+        printf("%d\n", countUndo);
       }
 //                  COMMIT CASE
       else if(junk[7] = '\0', !strcmp(junk, "<Commit")){           // Se for um commit...
-        for(j = 8, k = 0; s[j] != '>' ;j++) tmpname[k++] = s[j];
+        printf("commit\n");
+        for(j = 8, k = 0; s[j] != '>'; j++) tmpname[k++] = s[j];
         tmpname[k] = '\0';
         transacoes.push_back(transaction(tmpname, true, false));
       }
 //                  START TRANSACTION CASE
       else if(junk[6] = '\0', !strcmp(junk, "<start")){            // Se for start transação...
-        for(j = 7, k = 0; s[j] != '>' ;j++) tmpname[k++] = s[j];
+        printf("start transaction\n");
+        for(j = 7, k = 0; s[j] != '>'; j++) tmpname[k++] = s[j];
         tmpname[k] = '\0';
         aux = find(tmpname);
         if(aux != transacoes.end()){
           aux->started = true;
-          countUndo--;
+          if(!aux->committed) countUndo--;
         }
         if(!countUndo && passouSc) terminator = true;            // Se nao houver transações esperando starts,
                                                                   // Terminar análise
@@ -188,6 +190,7 @@ void analisarLog(){
         if(aux == transacoes.end()){
           transacoes.push_back(transaction(tmpname, false, false));
           undo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
+          countUndo++;
         }
         else if(!aux->committed) undo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
         else redo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
@@ -220,6 +223,7 @@ void printarOperacoes(){
   printf("##Redo##\n");
   while(!redo.empty()){
     j = redo.top();
+    redo.pop();
     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
   }
   printf("##Undo##\n");

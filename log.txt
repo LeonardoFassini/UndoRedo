@@ -8,3 +8,4 @@
 <start T3>
 <T3,D,19,20>
 <END CKPT>
+<Commit T2>

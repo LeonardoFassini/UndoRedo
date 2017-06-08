@@ -1,28 +1,26 @@
 ##BANCO##
 A = 5
-
 B = 9
-
 C = 14
-
 D = 19
-
-
+commit
 end ckpt
+start transaction
 start ckpt
 ##FLAGS##
 ckptFound: true
 terminator: true
 passouSc: true
+0
 ##TRANSAÇÕES##
+Nome: T2
+Commited: true
+Started: false
 Nome: T3
 Commited: false
 Started: true
-Nome: T2
-Commited: false
-Started: false
 ##OPERAÇÕES##
 ##Redo##
+<T2,C,14,15>
 ##Undo##
 <T3,D,19,20>
-<T2,C,14,15>

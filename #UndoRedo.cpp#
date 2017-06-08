@@ -69,12 +69,12 @@ int main(void){
   // transaction t(string("T1"), string("A"), string("1"), string("2"));
   // printf("%s %s %s %s\n", t.nome.c_str(), t.atributo.c_str(), t.velho.c_str(), t.novo.c_str());
   carregarBanco();
-  printf("\nDados do banco antes da recuperação:\n");
+  printf("Dados do banco antes da recuperação:\n");
   printarBanco();
   analisarLog();
   undu();
   redu();
-  printf("\nDados do banco depois da recuperação:\n");
+  printf("Dados do banco depois da recuperação:\n");
   printarBanco();
   //printarTransacoes();
   //printarOperacoes();
@@ -111,12 +111,11 @@ void carregarBanco(){
 }
 
 void printarBanco(){                                              // itera no map e printa ele
-  printf("\n");
+
   printf("##BANCO##\n");
   for(map<string, string>::iterator i = banco.begin(); i != banco.end(); i++){
     printf("%s = %s\n", i->first.c_str(), i->second.c_str());
   }
-  printf("\n");
 }
 
 void analisarLog(){
@@ -143,10 +142,9 @@ void analisarLog(){
       strcpy(junk, s);                                           // Copia para uma variavel que possa ser zoada
       junk[strlen(junk)-1] = '\0';                               // Coloca o /0 nela
 //                  END CHECKPOINT CASE
-      if(!strcmp(junk, "<END CKPT>")){ ckptFound = true; /*printf("end ckpt\n"); */}             // Se a operação for END_CKPT...
+      if(!strcmp(junk, "<END CKPT>")){ ckptFound = true;}             // Se a operação for END_CKPT...
 //                  START CHECKPOINT CASE
       else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT")){    // Se a operação for start checkpoint...
-        //printf("start ckpt\n");
         for(j = 12, k = 0; s[j] != ')';){                        // Ler os nomes das transações
           while(s[j] != ',' && s[j] != ')'){
             tmpname[k++] = s[j++];
@@ -161,22 +159,22 @@ void analisarLog(){
         }
         if(ckptFound) passouSc = true;
         if(!countUndo && ckptFound) terminator = true;            // Se nao houver transações esperando starts, Terminar análise
-        /*printf("##FLAGS##\n");
+        printf("##FLAGS##\n");
         printf("ckptFound: %s\n", ckptFound ? "true" : "false");
         printf("terminator: %s\n", terminator ? "true" : "false");
         printf("passouSc: %s\n", passouSc ? "true" : "false");
-        printf("%d\n", countUndo);*/
+        printf("%d\n", countUndo);
       }
 //                  COMMIT CASE
       else if(junk[7] = '\0', !strcmp(junk, "<Commit")){           // Se for um commit...
-        //printf("commit\n");
+        printf("commit\n");
         for(j = 8, k = 0; s[j] != '>'; j++) tmpname[k++] = s[j];
         tmpname[k] = '\0';
         transacoes.push_back(transaction(tmpname, true, false));
       }
 //                  START TRANSACTION CASE
       else if(junk[6] = '\0', !strcmp(junk, "<start")){            // Se for start transação...
-        //printf("start transaction\n");
+        printf("start transaction\n");
         for(j = 7, k = 0; s[j] != '>'; j++) tmpname[k++] = s[j];
         tmpname[k] = '\0';
         aux = find(tmpname);

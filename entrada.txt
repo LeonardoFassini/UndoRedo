@@ -1,10 +1,7 @@
-Idade=21
-Peso=76.2
-Altura=1.87
-Cor=23
-Tamanho=70
-Dado=4
-Dado2=34
-DadoT4=20.9
-Dado3=20
-DadoT4.2=30
+A=32
+B=30
+C=65
+D=50
+E=28
+F=2
+

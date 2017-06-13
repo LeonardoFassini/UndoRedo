@@ -146,29 +146,31 @@ void analisarLog(){
 //                  END CHECKPOINT CASE
       if(!strcmp(junk, "<END CKPT>")){ ckptFound = true; /*printf("end ckpt\n");*/}             // Se a operação for END_CKPT...
 //                  START CHECKPOINT CASE
-      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT") && ckptFound && !passouSc){    // Se a operação for start checkpoint...
+      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT")){    // Se a operação for start checkpoint...
         //printf("start ckpt\n");
-        for(j = 12, k = 0; s[j] != ')';){                        // Ler os nomes das transações
-          while(s[j] != ',' && s[j] != ')'){
-            tmpname[k++] = s[j++];
-          }
-          tmpname[k] = '\0';
-          if(s[j] != ')') j++;
-          k = 0;
-          finder = tmpname;
-          aux = find(tmpname);
-          if(aux == transacoes.end()){
-              countUndo++;                                                      // Se a transação nao existir ou nao for
-              transacoes.push_back(transaction(tmpname, false, false));         // Comitada, aumentar o count de undo e por no vector
+        if(ckptFound && !passouSc){
+          for(j = 12, k = 0; s[j] != ')';){                        // Ler os nomes das transações
+            while(s[j] != ',' && s[j] != ')'){
+              tmpname[k++] = s[j++];
             }
-          }
-        passouSc = true;
-        if(!countUndo) terminator = true;            // Se nao houver transações esperando starts, Terminar análise
-        /*printf("##FLAGS##\n");
-        printf("ckptFound: %s\n", ckptFound ? "true" : "false");
-        printf("terminator: %s\n", terminator ? "true" : "false");
-        printf("passouSc: %s\n", passouSc ? "true" : "false");
-        printf("%d\n", countUndo);*/
+            tmpname[k] = '\0';
+            if(s[j] != ')') j++;
+            k = 0;
+            finder = tmpname;
+            aux = find(tmpname);
+            if(aux == transacoes.end()){
+                countUndo++;                                                      // Se a transação nao existir ou nao for
+                transacoes.push_back(transaction(tmpname, false, false));         // Comitada, aumentar o count de undo e por no vector
+              }
+            }
+          passouSc = true;
+          if(!countUndo) terminator = true;            // Se nao houver transações esperando starts, Terminar análise
+          /*printf("##FLAGS##\n");
+          printf("ckptFound: %s\n", ckptFound ? "true" : "false");
+          printf("terminator: %s\n", terminator ? "true" : "false");
+          printf("passouSc: %s\n", passouSc ? "true" : "false");
+          printf("%d\n", countUndo);*/
+        }
       }
 //                  COMMIT CASE
       else if(junk[7] = '\0', !strcmp(junk, "<Commit")){           // Se for um commit...

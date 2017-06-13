@@ -1,3 +1,4 @@
+//*()!&
 #include <cstdio>
 #include <map>
 #include <vector>
@@ -58,7 +59,7 @@ stack <operation> redo;
 queue <operation> undo;
 
 //void printarOperacoes();
-void printarTransacoes();
+//void printarTransacoes();
 void carregarBanco();
 void printarBanco();
 void analisarLog();
@@ -69,7 +70,7 @@ int main(void){
   // transaction t(string("T1"), string("A"), string("1"), string("2"));
   // printf("%s %s %s %s\n", t.nome.c_str(), t.atributo.c_str(), t.velho.c_str(), t.novo.c_str());
   carregarBanco();
-  printf("\nDados do banco antes da recuperação:\n");
+  printf("Dados do banco antes da recuperação:\n");
   printarBanco();
   analisarLog();
   undu();
@@ -111,8 +112,8 @@ void carregarBanco(){
 }
 
 void printarBanco(){                                              // itera no map e printa ele
-  printf("\n");
-  printf("##BANCO##\n");
+
+  printf("\n##BANCO##\n");
   for(map<string, string>::iterator i = banco.begin(); i != banco.end(); i++){
     printf("%s = %s\n", i->first.c_str(), i->second.c_str());
   }
@@ -143,9 +144,9 @@ void analisarLog(){
       strcpy(junk, s);                                           // Copia para uma variavel que possa ser zoada
       junk[strlen(junk)-1] = '\0';                               // Coloca o /0 nela
 //                  END CHECKPOINT CASE
-      if(!strcmp(junk, "<END CKPT>")){ ckptFound = true; /*printf("end ckpt\n"); */}             // Se a operação for END_CKPT...
+      if(!strcmp(junk, "<END CKPT>")){ ckptFound = true; /*printf("end ckpt\n");*/}             // Se a operação for END_CKPT...
 //                  START CHECKPOINT CASE
-      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT")){    // Se a operação for start checkpoint...
+      else if(junk[11] = '\0', !strcmp(junk, "<Start CKPT") && ckptFound && !passouSc){    // Se a operação for start checkpoint...
         //printf("start ckpt\n");
         for(j = 12, k = 0; s[j] != ')';){                        // Ler os nomes das transações
           while(s[j] != ',' && s[j] != ')'){
@@ -156,23 +157,25 @@ void analisarLog(){
           k = 0;
           finder = tmpname;
           aux = find(tmpname);
-          if(aux == transacoes.end()) countUndo++;  // Se a transação nao existir ou nao for
-                                                                  // Comitada, aumentar o count de undo.
-        }
-        if(ckptFound) passouSc = true;
-        if(!countUndo && ckptFound) terminator = true;            // Se nao houver transações esperando starts, Terminar análise
-        printf("\n##FLAGS##\n");
+          if(aux == transacoes.end()){
+              countUndo++;                                                      // Se a transação nao existir ou nao for
+              transacoes.push_back(transaction(tmpname, false, false));         // Comitada, aumentar o count de undo e por no vector
+            }
+          }
+        passouSc = true;
+        if(!countUndo) terminator = true;            // Se nao houver transações esperando starts, Terminar análise
+        /*printf("##FLAGS##\n");
         printf("ckptFound: %s\n", ckptFound ? "true" : "false");
         printf("terminator: %s\n", terminator ? "true" : "false");
         printf("passouSc: %s\n", passouSc ? "true" : "false");
-        printf("%d\n\n", countUndo);
+        printf("%d\n", countUndo);*/
       }
 //                  COMMIT CASE
       else if(junk[7] = '\0', !strcmp(junk, "<Commit")){           // Se for um commit...
         //printf("commit\n");
         for(j = 8, k = 0; s[j] != '>'; j++) tmpname[k++] = s[j];
         tmpname[k] = '\0';
-		if(!passouSc) //Agora confere tambem se nao passou do startcheckpoint
+        if(!passouSc)
           transacoes.push_back(transaction(tmpname, true, false));
       }
 //                  START TRANSACTION CASE
@@ -195,13 +198,13 @@ void analisarLog(){
         for(j++, k = 0; s[j] != ','; j++, k++) tmpname3[k] = s[j]; tmpname3[k] = '\0';
         for(j++, k = 0; s[j] != '>'; j++, k++) tmpname4[k] = s[j]; tmpname4[k] = '\0';
         aux = find(string(tmpname));
-        if(aux == transacoes.end() && !passouSc){ //Agora confere tambem se nao passou do startcheckpoint
+        if(aux == transacoes.end() && !passouSc){
           transacoes.push_back(transaction(tmpname, false, false));
           undo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
           countUndo++;
         }
         else if(!aux->committed) undo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
-        else redo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
+        else if(!passouSc) redo.push(operation(tmpname, tmpname2, tmpname3, tmpname4));
       }
     }
   }
@@ -225,22 +228,22 @@ void printarTransacoes(){
   }
 }
 
- void printarOperacoes(){
-   operation j("", "", "", "");
-   printf("##OPERAÇÕES##\n");
-   printf("##Redo##\n");
-   while(!redo.empty()){
-     j = redo.top();
-     redo.pop();
-     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
-   }
-   printf("##Undo##\n");
-   while(!undo.empty()){
-     j = undo.front();
-     undo.pop();
-     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
-   }
- }
+// void printarOperacoes(){
+//   operation j("", "", "", "");
+//   printf("##OPERAÇÕES##\n");
+//   printf("##Redo##\n");
+//   while(!redo.empty()){
+//     j = redo.top();
+//     redo.pop();
+//     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+//   }
+//   printf("##Undo##\n");
+//   while(!undo.empty()){
+//     j = undo.front();
+//     undo.pop();
+//     printf("<%s,%s,%s,%s>\n", j.nome.c_str(), j.atributo.c_str(), j.velho.c_str(), j.novo.c_str());
+//   }
+// }
 
 void undu(){
  operation op("", "", "", "");
